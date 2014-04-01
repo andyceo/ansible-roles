@@ -149,18 +149,18 @@
     recurse=yes
   sudo: yes
 
-- name: Setting up permissions (-Rn options) for 'files' folder for wwwuser and owner with ACL
+- name: Setting up permissions (-R options) for 'files' folder for wwwuser and owner with ACL
   command:
-    setfacl -Rn -m u:{{ drupal.wwwuser }}:rwX -m u:{{ drupal.owner }}:rwX {{ drupal.directory_prefix }}/{{ item.0.directory }}/sites/{{ item.1.sitesdir }}/files
+    setfacl -R -m u:{{ drupal.wwwuser }}:rwX -m u:{{ drupal.owner }}:rwX {{ drupal.directory_prefix }}/{{ item.0.directory }}/sites/{{ item.1.sitesdir }}/files
     removes={{ drupal.directory_prefix }}/{{ item.0.directory }}/sites/{{ item.1.sitesdir }}/files
   sudo: yes
   with_subelements:
     - drupal.drupal_roots
     - sites
 
-- name: Setting up permissions (-dRn options) for 'files' folder for wwwuser and owner with ACL
+- name: Setting up permissions (-dR options) for 'files' folder for wwwuser and owner with ACL
   command:
-    setfacl -dRn -m u:{{ drupal.wwwuser }}:rwX -m u:{{ drupal.owner }}:rwX {{ drupal.directory_prefix }}/{{ item.0.directory }}/sites/{{ item.1.sitesdir }}/files
+    setfacl -dR -m u:{{ drupal.wwwuser }}:rwX -m u:{{ drupal.owner }}:rwX {{ drupal.directory_prefix }}/{{ item.0.directory }}/sites/{{ item.1.sitesdir }}/files
     removes={{ drupal.directory_prefix }}/{{ item.0.directory }}/sites/{{ item.1.sitesdir }}/files
   sudo: yes
   with_subelements:
