@@ -3,6 +3,7 @@ allow_duplicates: no
 dependencies:
   - { role: preconf }
   - { role: git }
+  - { role: utilities }
   - { role: php }
   - { role: drush }
   - { role: mysql }

@@ -2,5 +2,6 @@
 allow_duplicates: no
 dependencies:
   - { role: preconf }
+  - { role: git }
   - { role: php }
   - { role: composer }
