@@ -2,6 +2,7 @@
 utilities:
   packages:
     - aptitude
+    - python-software-properties
     - bc
     - sudo
     - htop
