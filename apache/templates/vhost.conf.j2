@@ -1,0 +1,11 @@
+# {{ vhosts[item].ServerName }}
+
+<VirtualHost {% if vhosts[item].VirtualHost %}{{ vhosts[item].VirtualHost }}{% else %}{{ apache.vhost }}:{{ apache.port }}{% if 'ssl' in apache.modules[apache.profile] %} *:443{% endif %}{% endif %}>
+  DocumentRoot {{ vhosts[item].DocumentRoot }}
+  ServerName {{ vhosts[item].ServerName }}
+{% for ServerAlias in vhosts[item].ServerAlias %}
+  ServerAlias {{ ServerAlias }}
+{% endfor %}
+  ErrorLog /var/log/apache2/{{ item }}-error.log
+  CustomLog /var/log/apache2/{{ item }}-access.log combined
+</VirtualHost>

@@ -1,0 +1,106 @@
+ServerName localhost
+
+Timeout 30
+KeepAlive On
+MaxKeepAliveRequests 16
+KeepAliveTimeout 4
+HostnameLookups Off
+ServerTokens Prod
+ServerSignature Off
+ServerAdmin andyceo@yandex.ru
+
+<Directory "/var/www">
+    AllowOverride All
+</Directory>
+
+
+################MPM Settings Section##############
+<IfModule mpm_prefork_module>
+    StartServers          2
+    MaxClients           25
+    MinSpareServers       2
+    MaxSpareServers       5
+    MaxRequestsPerChild  96
+</IfModule>
+
+<IfModule mpm_worker_module>
+    StartServers          2
+    MaxClients           25
+    MinSpareThreads      12
+    MaxSpareThreads      37
+    ThreadsPerChild      12
+    MaxRequestsPerChild  96
+</IfModule>
+
+<IfModule mpm_event_module>
+    StartServers          2
+    MaxClients           25
+    MinSpareThreads      12
+    MaxSpareThreads      37
+    ThreadsPerChild      12
+    MaxRequestsPerChild  96
+</IfModule>
+################End of MPM Settings Section##############
+
+
+
+###########################################################
+################# STANDALONE-ONLY SECTION #################
+###########################################################
+
+AccessFileName .htaccess
+<Files ~ "^\.ht">
+    Order allow,deny
+    Deny from all
+    Satisfy all
+</Files>
+Options -Indexes
+Options +FollowSymLinks
+
+# Protect files and directories from prying eyes.#
+<FilesMatch "\.(engine|inc|info|install|module|profile|test|po|sh|.*sql|theme|tpl(\.php)?|xtmpl|svn-base)$|^(code-style\.pl|Entries.*|Repository|Root|Tag|Template|all-wcprops|entries|format)$">
+  Order allow,deny
+</FilesMatch>
+
+########Effective tuning of mod_deflate module. compress content########
+<IfModule mod_deflate.c>
+  # the default types, safe in any browser.
+  # these are known to be safe with MSIE 6
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml
+
+  # everything else may cause problems with MSIE 6
+  # the javascript files
+  AddOutputFilterByType DEFLATE application/javascript text/javascript application/x-javascript application/ecmascript
+
+  # the css files
+  AddOutputFilterByType DEFLATE text/css
+
+  # rss feeds
+  AddOutputFilterByType DEFLATE application/rss+xml
+
+  # Compress level
+  DeflateCompressionLevel 5
+
+  # check browser and turn off compression on bad browsers
+  <IfModule mod_setenvif.c>
+    BrowserMatch ^Mozilla/4 gzip-only-text/html
+    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+  </IfModule>
+
+  <IfModule mod_headers.c>
+    # properly handle requests coming from behind proxies
+    Header append Vary User-Agent
+  </IfModule>
+</IfModule>
+
+###############Tuning mod_evasive module if exists###############
+<IfModule mod_evasive20.c>
+    DOSHashTableSize 3097
+    DOSPageCount 2
+    DOSSiteCount 20
+    DOSPageInterval 1
+    DOSSiteInterval 1
+    DOSBlockingPeriod 30
+    DOSEmailNotify andyceo@yandex.ru
+</IfModule>

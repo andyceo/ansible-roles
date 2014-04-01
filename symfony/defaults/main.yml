@@ -1,0 +1,20 @@
+---
+symfony:
+  path: /var/www/Symfony
+  version: ''
+  owner: root
+  group: root
+  users:
+    - root
+    - www-data
+
+# This is the example config for roles that support vhosts.
+# vhosts variable is global for host.
+vhosts:
+  'symfony.local':
+    VirtualHost: no
+    DocumentRoot: /var/www/Symfony/web
+    ServerName: symfony.local
+    ServerAlias:
+      - www.symfony.local
+    enabled: no

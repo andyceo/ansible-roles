@@ -1,0 +1,23 @@
+- name: ssh-start
+  service:
+    name=ssh
+    start=started
+  sudo: yes
+
+- name: ssh-stop
+  service:
+    name=ssh
+    start=stopped
+  sudo: yes
+
+- name: ssh-reload
+  service:
+    name=ssh
+    state=reloaded
+  sudo: yes
+
+- name: ssh-restart
+  service:
+    name=ssh
+    state=restarted
+  sudo: yes

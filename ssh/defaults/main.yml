@@ -1,0 +1,4 @@
+ssh:
+  daemon:
+    PermitRootLogin: 'yes'
+    PasswordAuthentication: 'yes'

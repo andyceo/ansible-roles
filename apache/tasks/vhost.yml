@@ -1,0 +1,52 @@
+---
+# Description: Create a new Apache virtual hosts
+# Original from: https://github.com/gaspaio/ansible-devbox/blob/master/roles/apache/tasks/vhost_add.yml
+#
+# Parameters:
+# - {{ vhosts }} : Virtual hosts hash. See defaults/main.yml
+
+
+- name: Change default virtual host to given vhost and port
+  lineinfile:
+    dest={{ apache.default_vhost_path }}
+    regexp='^\<VirtualHost'
+    line="<VirtualHost {{ apache.vhost }}:{{ apache.port }}>"
+  sudo: yes
+  notify: apache-reload
+
+- name: Disabling virtual hosts
+  command:
+    a2dissite {{ item }}.conf
+    removes=/etc/apache2/sites-enabled/{{ item }}.conf
+  with_items: vhosts|list
+  sudo: yes
+  notify: apache-reload
+  when: "not vhosts[item].enabled|bool"
+
+- name: Removing virtual hosts
+  command:
+    rm /etc/apache2/sites-available/{{ [item }}.conf
+    removes=/etc/apache2/sites-available/{{ item }}.conf
+  with_items: vhosts|list
+  sudo: yes
+  notify: apache-reload
+  when: "not vhosts[item].enabled|bool"
+
+- name: Adding virtual hosts
+  template:
+    src=vhost.conf.j2
+    dest=/etc/apache2/sites-available/{{ item }}.conf
+    mode=0644
+  with_items: vhosts|list
+  sudo: yes
+  notify: apache-reload
+  when: vhosts[item].enabled|bool
+
+- name: Enabling virtual hosts
+  command:
+    a2ensite {{ item }}.conf
+    creates=/etc/apache2/sites-enabled/{{ item }}.conf
+  with_items: vhosts|list
+  sudo: yes
+  notify: apache-reload
+  when: vhosts[item].enabled|bool

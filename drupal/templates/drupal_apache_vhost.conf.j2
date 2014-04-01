@@ -1,0 +1,9 @@
+# {{ item.servername }}
+
+<VirtualHost *:80>
+  DocumentRoot {{ drupal.directory_prefix }}/{{ item.directory }}
+  ServerName {{ item.servername }}
+  ServerAlias {{ item.serveralias }}
+  ErrorLog /var/log/apache2/{{ item.servername }}-error.log
+  CustomLog /var/log/apache2/{{ item.servername }}-access.log combined
+</VirtualHost>

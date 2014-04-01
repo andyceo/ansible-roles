@@ -1,0 +1,54 @@
+---
+apache:
+  version: '2.4'
+  profile: standalone
+  profiles:
+    - standalone
+    - backend
+  vhost: '*'
+  port: 80
+  conf_dir: /etc/apache2/conf-available
+  conf_enabled_dir: /etc/apache2/conf-enabled
+  default_vhost_path: /etc/apache2/sites-available/000-default.conf
+  service: yes
+  modules:
+    required:
+      - alias
+      - authz_core
+      - authz_host
+      - authz_user
+      - dir
+      - env
+      - mime
+      - mpm_prefork
+      - reqtimeout
+      - rewrite
+      - status
+    ignored:
+      - authz_core
+      - mpm_prefork
+      - access_compat
+      - php5
+      - python
+    packaged:
+      # packaged is a modules, that need installation with apt:
+      # sudo apt-get install libapache2-mod-{module}
+      - php5
+      - python
+      - rpaf
+    standalone:
+      - filter
+      - deflate
+      - ssl
+    backend:
+      - rpaf
+
+vhosts:
+  'example.com':
+    VirtualHost: ' *:80 127.0.0.1:8080'
+    DocumentRoot: /var/www
+    ServerName: example.com
+    ServerAlias:
+      - www.example.com
+      - 127.0.0.1
+    enabled: no

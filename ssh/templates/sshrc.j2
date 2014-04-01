@@ -1,0 +1,8 @@
+{% if 0 %}
+echo "SSH login to \"$(hostname)\" perfomed. Details:
+
+Date: $(date +"%Y.%m.%d %H:%m:%S %Z %z")
+User: $USER
+SSH Connection: $SSH_CONNECTION
+SSH TTY: $SSH_TTY" | mail -s "$USER@$(hostname) ssh login" andyceo@yandex.ru
+{% endif %}

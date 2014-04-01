@@ -1,0 +1,108 @@
+- name: Install Apache 2
+  apt: pkg=apache2
+  sudo: yes
+
+
+# Working with Apache configuration
+
+- name: Copy Apache configuration file
+  template:
+    src={{ apache.profile }}.conf.j2
+    dest={{ apache.conf_dir }}/{{ apache.profile }}.conf
+    mode=0644
+  sudo: yes
+  notify: apache-restart
+
+- name: Activate configuration (Apache 2.4 and above only)
+  command:
+    a2enconf {{ apache.profile }}.conf
+    creates={{ apache.conf_enabled_dir }}/{{ apache.profile }}.conf
+  sudo: yes
+  when: (apache.version >= '2.4') and (apache.conf_enabled_dir | bool)
+  notify: apache-restart
+
+- name: Deactivate old configuration (Apache 2.4 and above only)
+  command:
+    a2disconf {{ item }}.conf
+    removes={{ apache.conf_enabled_dir }}/{{ item }}.conf
+  sudo: yes
+  with_items: apache.profiles
+  when: (item != apache.profile) and (apache.version >= '2.4') and (apache.conf_enabled_dir | bool)
+  notify: apache-restart
+
+- name: Remove previous profile configuration file
+  file:
+    path={{ apache.conf_dir }}/{{ item }}.conf
+    state=absent
+  sudo: yes
+  with_items: apache.profiles
+  when: item != apache.profile
+  notify: apache-restart
+
+- name: Set Listen port
+  lineinfile:
+    dest=/etc/apache2/ports.conf
+    regexp='^Listen '
+    line="Listen {{ apache.vhost }}:{{ apache.port }}"
+  sudo: yes
+  notify: apache-restart
+
+- name: Set NameVirtualHost (deprecated)
+  lineinfile:
+    dest=/etc/apache2/ports.conf
+    regexp='^NameVirtualHost '
+    line="NameVirtualHost {{ apache.vhost }}:{{ apache.port }}"
+  sudo: yes
+  when: apache.version < '2.4'
+  notify: apache-restart
+
+- name: Enable/disable Apache as service
+  service:
+    name=apache2
+    enabled={{ apache.service | bool }}
+  sudo: yes
+
+
+# Working with Apache modules
+
+- name: Retrieve a list of loaded shared Apache modules
+  shell:
+    apachectl -M | grep '_module (shared)' | sed 's/_module (shared)//;s/ //' | sort -r
+  register: apache_loaded_modules
+  sudo: yes
+
+- name: Install requried modules if they not installed yet
+  apt:
+    pkg=libapache2-mod-{{ item }}
+  sudo: yes
+  with_items: ((apache.modules.required | union(apache.modules[apache.profile])) | intersect(apache.modules.packaged)) | list
+
+#- name: Disable unnecessary modules
+  #command:
+    #a2dismod {{ item }}
+  #sudo: yes
+  #with_items: apache_loaded_modules.stdout_lines
+  #when: item not in (apache.modules.required | union(apache.modules.ignored) | union(apache.modules[apache.profile]))
+  #notify: apache-restart
+
+- name: Enable required modules
+  command:
+    a2enmod {{ item }}
+  sudo: yes
+  with_items: (apache.modules.required | union(apache.modules[apache.profile])) | list
+  when: item not in (apache_loaded_modules.stdout_lines | union(apache.modules.ignored))
+  notify: apache-restart
+
+#- name: Remove unused packaged modules
+  #apt:
+    #pkg=libapache2-mod-{{ item }}
+    #state=absent
+  #sudo: yes
+  #with_items: (apache_loaded_modules.stdout_lines | intersect(apache.modules.packaged)) | list
+  #when: item not in (apache.modules.required | union(apache.modules.ignored) | union(apache.modules[apache.profile]))
+
+
+# Working with Apache virtual hosts
+
+- name: Adding/removing Apache virtual hosts
+  include: vhost.yml

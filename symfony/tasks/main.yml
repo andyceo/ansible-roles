@@ -1,0 +1,26 @@
+- name: Symfony | Install framework if it not installed
+  command:
+    composer create-project --no-interaction symfony/framework-standard-edition {{ symfony.path }} {{ symfony.version }}
+    creates="{{ symfony.path }}/composer.json"
+  sudo: yes
+
+- name: Set right owner for Symfony folder and files
+  file:
+    path={{ symfony.path }}
+    state=directory
+    owner={{ symfony.owner }}
+    group={{ symfony.group }}
+    recurse=yes
+  sudo: yes
+
+- name: Symfony | Setting up permissions for cache files with ACL
+  command:
+    "setfacl -R -m u:{{ item }}:rwX {{ symfony.path }}/app/cache {{ symfony.path }}/app/logs"
+  sudo: yes
+  with_items: symfony.users
+
+- name: Symfony | Setting up default permissions for cache folders with ACL
+  command:
+    "setfacl -dR -m u:{{ item }}:rwX {{ symfony.path }}/app/cache {{ symfony.path }}/app/logs"
+  sudo: yes
+  with_items: symfony.users

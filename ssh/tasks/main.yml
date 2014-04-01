@@ -1,0 +1,23 @@
+---
+- name: Install ssh client and daemon
+  apt: pkg=ssh
+  sudo: yes
+
+- name: Push SSH daemon global config file sshd_config
+  template:
+    src=sshd_config.j2
+    dest=/etc/ssh/sshd_config
+    mode=0644
+    owner=root
+    group=root
+  sudo: yes
+  notify: ssh-restart
+
+- name: Push sshrc file
+  template:
+    src=sshrc.j2
+    dest=/etc/ssh/sshrc
+    mode=0644
+    owner=root
+    group=root
+  sudo: yes

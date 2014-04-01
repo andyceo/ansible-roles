@@ -1,0 +1,70 @@
+ServerName localhost
+
+Timeout 5
+KeepAlive Off
+MaxKeepAliveRequests 16
+KeepAliveTimeout 4
+HostnameLookups Off
+ServerTokens Prod
+ServerSignature Off
+ServerAdmin andyceo@yandex.ru
+
+<Directory "/var/www">
+    AllowOverride All
+</Directory>
+
+
+################MPM Settings Section##############
+<IfModule mpm_prefork_module>
+    StartServers          2
+    MaxClients           20
+    MinSpareServers       2
+    MaxSpareServers       5
+    MaxRequestsPerChild   0
+</IfModule>
+
+<IfModule mpm_worker_module>
+    StartServers          2
+    MaxClients           20
+    MinSpareThreads       5
+    MaxSpareThreads      10
+    ThreadsPerChild      25
+    MaxRequestsPerChild   0
+</IfModule>
+
+<IfModule mpm_event_module>
+    StartServers          2
+    MaxClients           20
+    MinSpareThreads       5
+    MaxSpareThreads      10
+    ThreadsPerChild      25
+    MaxRequestsPerChild   0
+</IfModule>
+################End of MPM Settings Section##############
+
+
+
+###########################################################
+################## BACKEND-ONLY SECTION ###################
+###########################################################
+
+###########Env module settings for nginx##########
+<IfModule env_module>
+    SetEnv force-no-vary
+    SetEnv downgrade-1.0
+</IfModule>
+#############End Env for nginx settings###########
+
+
+###################RPAF Settings#########################
+<IfModule mod_rpaf.c>
+    RPAFenable On
+    RPAFsethostname On
+
+    # You can use multiple ips, list them with space delinmiter:
+    # RPAFproxy_ips 127.0.0.1 192.162.0.1
+    RPAFproxy_ips 127.0.0.1
+
+    #RPAFheader X-Forwarded-For
+</IfModule>
+#################End RPAF Settings######################

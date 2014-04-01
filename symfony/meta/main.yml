@@ -1,0 +1,7 @@
+---
+allow_duplicates: no
+dependencies:
+  - { role: preconf }
+  - { role: php }
+  - { role: composer }
+  - { role: utilities }

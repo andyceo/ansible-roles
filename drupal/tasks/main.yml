@@ -1,0 +1,168 @@
+- name: Create local cache folders for each package-handler variants
+  local_action:
+    file
+      path={{ drupal.local_cache_path }}/drupal/{{ item }}
+      mode=0755
+      state=directory
+  with_items: drupal.sources
+
+- name: Checkout all projects under git_drupalorg to local cache
+  local_action:
+    command
+      drush dl {{ item.1.name }}-{{ item.1.version }}
+        -y
+        --package-handler=git_drupalorg
+        --destination={{ drupal.local_cache_path }}/drupal/git_drupalorg
+        --drupal-project-rename={{ item.1.name }}
+      creates={{ drupal.local_cache_path }}/drupal/git_drupalorg/{{ item.1.name }}
+  with_subelements:
+    - drupal.drupal_roots
+    - projects
+  when: item.1.source == "git_drupalorg"
+
+# @TODO: Make a local cache for other package handlers
+
+- name: Archive local cache
+  local_action:
+    command
+      tar czf {{ drupal.local_cache_path }}/drupal-cache.tar.gz drupal
+      chdir={{ drupal.local_cache_path }}
+      creates={{ drupal.local_cache_path }}/drupal-cache.tar.gz
+
+- name: Unarchive local cache to the remote cache
+  unarchive:
+    src={{ drupal.local_cache_path }}/drupal-cache.tar.gz
+    dest={{ drupal.remote_cache_path }}/
+
+- name: Create/update drupal prefix directory
+  file:
+    path={{ drupal.directory_prefix }}
+    owner=root
+    group=root
+    mode=0755
+    state=directory
+  sudo: yes
+
+- name: Copy all drupal_roots (Drupal cores) under git_drupalorg from remote cache to the apropriate destination
+  command:
+    cp -r {{ drupal.remote_cache_path }}/drupal/{{ item.1.source }}/drupal/ {{ drupal.directory_prefix }}/{{ item.0.directory }}/
+    creates={{ drupal.directory_prefix }}/{{ item.0.directory }}
+  sudo: yes
+  with_subelements:
+    - drupal.drupal_roots
+    - projects
+  when: (item.1.source == "git_drupalorg") and (item.1.type == "core")
+
+# We don't use ansible git module here because we don't know the repository url
+- name: Checkout all drupal_roots (Drupal cores) under git_drupalorg to the aproprite version
+  command:
+    git checkout {{ item.1.version }}
+    chdir={{ drupal.directory_prefix }}/{{ item.0.directory }}
+  sudo: yes
+  with_subelements:
+    - drupal.drupal_roots
+    - projects
+  when: (item.1.source == "git_drupalorg") and (item.1.type == "core")
+
+- name: (Re)Create apropriate site folders inside 'sites' directory for all given sites
+  file:
+    path={{ drupal.directory_prefix }}/{{ item.0.directory }}/sites/{{ item.1.sitesdir }}
+    owner=root
+    group=root
+    state=directory
+    mode=0755
+  sudo: yes
+  with_subelements:
+    - drupal.drupal_roots
+    - sites
+  when: item.1.reinstall|bool
+
+- name: (Re)Create settings.php file
+  command:
+    cp -f {{ drupal.directory_prefix }}/{{ item.0.directory }}/sites/default/default.settings.php {{ drupal.directory_prefix }}/{{ item.0.directory }}/sites/{{ item.1.sitesdir }}/settings.php
+  sudo: yes
+  with_subelements:
+    - drupal.drupal_roots
+    - sites
+  when: item.1.reinstall|bool
+
+- name: Remove all 'files' folders inside 'sites' folders
+  command:
+    rm -rf  {{ drupal.directory_prefix }}/{{ item.0.directory }}/sites/{{ item.1.sitesdir }}/files
+    removes={{ drupal.directory_prefix }}/{{ item.0.directory }}/sites/{{ item.1.sitesdir }}/files
+  sudo: yes
+  with_subelements:
+    - drupal.drupal_roots
+    - sites
+  when: item.1.reinstall|bool
+
+- name: '...and create them again'
+  file:
+    path={{ drupal.directory_prefix }}/{{ item.0.directory }}/sites/{{ item.1.sitesdir }}/files
+    owner=root
+    group=root
+    state=directory
+    mode=0755
+  sudo: yes
+  with_subelements:
+    - drupal.drupal_roots
+    - sites
+  when: item.1.reinstall|bool
+
+- name: (Re)install Drupal 8 sites with drush
+  command:
+    drush site-install standard
+      -y
+      -r {{ drupal.directory_prefix }}/{{ item.0.directory }}
+      --sites-subdir="{{ item.1.sitesdir }}"
+      --account-mail="{{ item.1.account.mail }}"
+      --account-name="{{ item.1.account.name }}"
+      --account-pass="{{ item.1.account.pass }}"
+      --site-mail="{{ item.1.site.mail }}"
+      --site-name="{{ item.1.site.name }}"
+      --db-url="mysql://{{ item.1.db.user }}:{{ item.1.db.pass | default(mysql.users[item.1.db.user].password) }}@localhost/{{ item.1.db.name }}"
+      install_configure_form.site_default_country={{ item.1.extra.country | default('RU') }}
+      install_configure_form.date_default_timezone={{ item.1.extra.timezone | default('Europe/Moscow') }}
+      install_configure_form.update_status_module='array(FALSE, FALSE)'
+  sudo: yes
+  with_subelements:
+    - drupal.drupal_roots
+    - sites
+  when: item.1.reinstall|bool
+
+- name: Create .gitignore for Drupal in git
+  command:
+    cp -an {{ drupal.directory_prefix }}/{{ item.0.directory }}/example.gitignore {{ drupal.directory_prefix }}/{{ item.0.directory }}/.gitignore
+    creates={{ drupal.directory_prefix }}/{{ item.0.directory }}/.gitignore
+  sudo: yes
+  with_subelements:
+    - drupal.drupal_roots
+    - projects
+  when: (item.1.source == "core") and (item.1.source == "git_drupalorg")
+
+- name: Set global owner recursively for drupal prefix folder
+  file:
+    path={{ drupal.directory_prefix }}
+    owner={{ drupal.owner }}
+    group={{ drupal.group }}
+    state=directory
+    recurse=yes
+  sudo: yes
+
+- name: Setting up permissions (-Rn options) for 'files' folder for wwwuser and owner with ACL
+  command:
+    setfacl -Rn -m u:{{ drupal.wwwuser }}:rwX -m u:{{ drupal.owner }}:rwX {{ drupal.directory_prefix }}/{{ item.0.directory }}/sites/{{ item.1.sitesdir }}/files
+    removes={{ drupal.directory_prefix }}/{{ item.0.directory }}/sites/{{ item.1.sitesdir }}/files
+  sudo: yes
+  with_subelements:
+    - drupal.drupal_roots
+    - sites
+
+- name: Setting up permissions (-dRn options) for 'files' folder for wwwuser and owner with ACL
+  command:
+    setfacl -dRn -m u:{{ drupal.wwwuser }}:rwX -m u:{{ drupal.owner }}:rwX {{ drupal.directory_prefix }}/{{ item.0.directory }}/sites/{{ item.1.sitesdir }}/files
+    removes={{ drupal.directory_prefix }}/{{ item.0.directory }}/sites/{{ item.1.sitesdir }}/files
+  sudo: yes
+  with_subelements:
+    - drupal.drupal_roots
+    - sites

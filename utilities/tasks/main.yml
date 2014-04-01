@@ -1,0 +1,4 @@
+- name: Installing useful utilities
+  apt: pkg={{ item }}
+  with_items: utilities.packages
+  sudo: yes

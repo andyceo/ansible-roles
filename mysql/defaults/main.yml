@@ -1,0 +1,18 @@
+---
+mysql:
+  root_password: ''
+  current_root_password: ''
+  databases:
+     - test1
+     - test2
+  users:
+    test1:
+      password: test1pass
+      priv: test1.*:ALL
+      state: absent
+    test2:
+      password: test2pass
+      priv: test2.*:ALL
+      state: absent
+  settings:
+    innodb_buffer_pool_size: 1024M

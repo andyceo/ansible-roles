@@ -1,0 +1,4 @@
+- name: logrotate-apply
+  command:
+    logrotate /etc/logrotate.conf
+  sudo: yes

@@ -1,0 +1,40 @@
+---
+utilities:
+  packages:
+    - aptitude
+    - bc
+    - sudo
+    - htop
+    - iotop
+    - itop
+    - iftop
+    - mytop
+    - atop
+    - powertop
+    - apachetop
+    - visitors
+    - fortunes-ubuntu-server
+    - nmap
+    - grc
+    - tree
+    - traceroute
+    - acl
+    - nethogs
+    - dar
+    - rar
+    - p7zip
+    - subversion
+    - git-svn
+    - lynx
+    - ccze
+    - curl
+    - dstat
+    - sysstat
+    - smartmontools
+    - tcpdump
+    - wget
+    - vim
+    - tmux
+    - facter
+    - ncurses-term
+    - sysv-rc-conf

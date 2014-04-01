@@ -1,0 +1,142 @@
+drupal:
+  directory_prefix: /var/www/drupal
+  local_cache_path: /tmp
+  remote_cache_path: /tmp
+  sources:
+    - git_drupalorg
+    - wget
+  project_types:
+    - core
+    - module
+    - theme
+  owner: root
+  group: root
+  wwwuser: www-data
+  wwwgroup: www-data
+
+  drupal_roots:
+    # Drupal 8 bleeding edge
+    - directory: drupal8-core
+      projects:
+        - name: drupal
+          type: core
+          version: 8.x
+          source: git_drupalorg
+        - name: devel
+          type: module
+          source: git_drupalorg
+          version: 8.x-1.x
+          subdir: contrib
+        - name: config_inspector
+          type: module
+          source: git_drupalorg
+          version: 8.x-1.x
+          subdir: contrib
+        - name: media_entity
+          type: module
+          source: git_drupalorg
+          version: 8.x-1.x
+          subdir: contrib
+        - name: bootstrap
+          type: theme
+          source: git_drupalorg
+          version: 8.x-3.x
+          subdir: contrib
+        - name: adaptivetheme
+          type: theme
+          source: git_drupalorg
+          version: 8.x-1.x
+          subdir: contrib
+        - name: zen
+          type: theme
+          source: git_drupalorg
+          version: 8.x-7.x
+          subdir: contrib
+      sites:
+        - vhost: drupal8-core.local
+          sitesdir: drupal8-core.local
+          reinstall: yes
+          account:
+            mail: noreply@drupal8-core.local
+            name: root
+            pass: '123qwe'
+          site:
+            mail: noreply@drupal8-core.local
+            name: 'Drupal 8.x'
+          db:
+            name: drupal8-core
+            user: drupal8-core
+          extra:
+            country: RU
+            timezone: Europe/Moscow
+    # Drupal 8.0-alpha10
+    - directory: drupal8-alpha10
+      projects:
+        - name: drupal
+          type: core
+          version: 8.0-alpha10
+          source: git_drupalorg
+      sites:
+        - vhost: drupal8-alpha10.local
+          reinstall: yes
+          sitesdir: drupal8-alpha10.local
+          account:
+            mail: noreply@drupal8-alpha10.local
+            name: root
+            pass: '123qwe'
+          site:
+            mail: noreply@drupal8-alpha10.local
+            name: 'Drupal 8.0-alpha10'
+          db:
+            name: drupal8-alpha10
+            user: drupal8-alpha10
+          extra:
+            country: RU
+            timezone: Europe/Moscow
+    # Drupal 7 bleeding edge
+    - directory: drupal7-core
+      projects:
+        - name: drupal
+          type: core
+          version: 7.x
+          source: git_drupalorg
+        - name: views
+          type: module
+          source: git_drupalorg
+          version: 7.x-3.x
+          subdir: contrib
+      sites:
+        - vhost: drupal7-core.local
+          reinstall: yes
+          sitesdir: drupal7-core.local
+          account:
+            mail: noreply@drupal7-core.local
+            name: root
+            pass: '123qwe'
+          site:
+            mail: noreply@drupal7-core.local
+            name: 'Drupal 7.x'
+          db:
+            name: drupal7-core
+            user: drupal7-core
+          extra:
+            country: RU
+            timezone: Europe/Moscow
+
+vhosts:
+
+  'drupal8-core.local':
+    VirtualHost: no
+    DocumentRoot: /var/www/drupal/drupal8-core
+    ServerName: drupal8-core.local
+    ServerAlias:
+    - www.drupal8-core.local
+    enabled: no
+
+  'drupal7.local':
+    VirtualHost: no
+    DocumentRoot: /var/www/drupal/drupal7
+    ServerName: drupal7.local
+    ServerAlias:
+    - www.drupal7.local
+    enabled: no

@@ -1,0 +1,21 @@
+/var/log/apache2/*.log {
+       monthly
+       missingok
+       rotate 1
+       compress
+       compressoptions -9
+       nodelaycompress
+       create 640 root adm
+       dateext
+       dateformat %Y-%m.
+       extension log
+       sharedscripts
+       postrotate
+               /etc/init.d/apache2 reload > /dev/null
+       endscript
+       prerotate
+               if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
+                       run-parts /etc/logrotate.d/httpd-prerotate; \
+               fi; \
+       endscript
+}

@@ -1,0 +1,9 @@
+---
+allow_duplicates: no
+dependencies:
+  - { role: preconf }
+  - { role: mc }
+  - { role: git }
+  - { role: mailutils }
+  - { role: ssh }
+  - { role: logrotate }

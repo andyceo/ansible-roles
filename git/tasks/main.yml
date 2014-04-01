@@ -1,0 +1,10 @@
+- name: Install git
+  apt: pkg=git
+  sudo: yes
+
+- name: Push global config file
+  template:
+    src=gitconfig.j2
+    dest=/etc/gitconfig
+    mode=0644
+  sudo: yes

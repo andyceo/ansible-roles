@@ -1,0 +1,25 @@
+---
+# Composer: http://getcomposer.org/
+# Installation documentation: http://getcomposer.org/doc/00-intro.md#installation-nix
+#
+#   curl -sS https://getcomposer.org/installer | php
+#   sudo mv composer.phar /usr/local/bin/composer
+
+- name: Download composer to /tmp
+  shell:
+    curl -sS https://getcomposer.org/installer | php
+    creates='/usr/local/bin/composer'
+    chdir='/tmp'
+  sudo: yes
+
+- name: Move composer to /usr/local/bin (Global installation)
+  command:
+    mv composer.phar /usr/local/bin/composer
+    creates='/usr/local/bin/composer'
+    chdir='/tmp'
+  sudo: yes
+
+- name: Update composer
+  command:
+    composer self-update
+  sudo: yes

@@ -1,0 +1,7 @@
+git:
+  core:
+    editor: mcedit
+  merge:
+    tool: meld
+  push:
+    default: upstream

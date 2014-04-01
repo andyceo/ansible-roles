@@ -1,0 +1,19 @@
+---
+php:
+  settings:
+    cli:
+      filepath: /etc/php5/cli/php.ini
+      max_execution_time: 0
+      memory_limit: -1
+      disable_functions: ''
+      html_errors: 'Off'
+      session:
+        gc_probability: 0
+    apache2:
+      filepath: /etc/php5/apache2/php.ini
+      max_execution_time: 85
+      memory_limit: 256M
+      disable_functions: "pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,"
+      html_errors: 'On'
+      session:
+        gc_probability: 1
