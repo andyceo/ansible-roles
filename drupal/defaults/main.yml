@@ -2,6 +2,7 @@ drupal:
   directory_prefix: /var/www/drupal
   local_cache_path: /tmp
   remote_cache_path: /tmp
+  default_profile: standard
   sources:
     - git_drupalorg
     - wget
@@ -80,6 +81,7 @@ drupal:
         - vhost: drupal8-alpha10.local
           reinstall: yes
           sitesdir: drupal8-alpha10.local
+          profile: standard
           account:
             mail: noreply@drupal8-alpha10.local
             name: root
@@ -109,6 +111,7 @@ drupal:
         - vhost: drupal7-core.local
           reinstall: yes
           sitesdir: drupal7-core.local
+          profile: standard
           account:
             mail: noreply@drupal7-core.local
             name: root

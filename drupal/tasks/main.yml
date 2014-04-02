@@ -111,7 +111,7 @@
 
 - name: (Re)install Drupal 8 sites with drush
   command:
-    drush site-install standard
+    drush site-install {{ item.1.profile | default(drupal.default_profile) }}
       -y
       -r {{ drupal.directory_prefix }}/{{ item.0.directory }}
       --sites-subdir="{{ item.1.sitesdir }}"
