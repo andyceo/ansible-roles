@@ -64,6 +64,30 @@
     - projects
   when: (item.1.source == "git_drupalorg") and (item.1.type == "core")
 
+- name: Create all needed project type - specific directories
+  file:
+    path={{ drupal.directory_prefix }}/{{ item.0.directory }}/{{ item.1.directory | default(drupal.default.directory[item.1.type]) }}
+    owner=root
+    group=root
+    state=directory
+    recurse=yes
+    mode=0755
+  sudo: yes
+  with_subelements:
+    - drupal.drupal_roots
+    - projects
+  when: item.1.type != "core"
+
+- name: Copy all non-core projects under git_drupalorg to its apropriate destination
+  command:
+    cp -r {{ drupal.remote_cache_path }}/drupal/{{ item.1.source }}/{{ item.1.name }} {{ drupal.directory_prefix }}/{{ item.0.directory }}/{{ item.1.directory | default(drupal.default.directory[item.1.type] ~ "/" ~ item.1.name) }}
+    creates={{ drupal.directory_prefix }}/{{ item.0.directory }}/{{ item.1.directory | default(drupal.default.directory[item.1.type] ~ "/" ~ item.1.name) }}
+  sudo: yes
+  with_subelements:
+    - drupal.drupal_roots
+    - projects
+  when: (item.1.source == "git_drupalorg") and (item.1.type != "core")
+
 - name: (Re)Create apropriate site folders inside 'sites' directory for all given sites
   file:
     path={{ drupal.directory_prefix }}/{{ item.0.directory }}/sites/{{ item.1.sitesdir }}
@@ -111,7 +135,7 @@
 
 - name: (Re)install Drupal 8 sites with drush
   command:
-    drush site-install {{ item.1.profile | default(drupal.default_profile) }}
+    drush site-install {{ item.1.profile | default(drupal.default.profile) }}
       -y
       -r {{ drupal.directory_prefix }}/{{ item.0.directory }}
       --sites-subdir="{{ item.1.sitesdir }}"

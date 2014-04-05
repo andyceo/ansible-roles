@@ -2,7 +2,6 @@ drupal:
   directory_prefix: /var/www/drupal
   local_cache_path: /tmp
   remote_cache_path: /tmp
-  default_profile: standard
   sources:
     - git_drupalorg
     - wget
@@ -14,6 +13,12 @@ drupal:
   group: root
   wwwuser: www-data
   wwwgroup: www-data
+  default:
+    major_version: 8
+    profile: standard
+    directory:
+      module: modules/contrib
+      theme: themes/contrib
 
   drupal_roots:
     # Drupal 8 bleeding edge
