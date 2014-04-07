@@ -17,7 +17,7 @@
   safecrlf = false
   ignorecase = false
   excludesfile = ~/.gitignore
-  editor = {{ git.core.editor | default('mcedit') }}
+  editor = {{ git.settings.core.editor | default('mcedit') }}
 [color]
   diff = true
   status = true
@@ -41,6 +41,6 @@
 [format]
   pretty = "%n%n%nCommit:  %C(yellow)%H%nAuthor:  %C(green)%aN <%aE>%nDate:    (%C(red)%ar%Creset) %ai%nSubject: %s%b"
 [merge]
-  tool = {{ git.merge.tool | default('meld') }}
+  tool = {{ git.settings.merge.tool | default('meld') }}
 [push]
-  default = {{ git.push.default | default('upstream') }}
+  default = {{ git.settings.push.default | default('upstream') }}

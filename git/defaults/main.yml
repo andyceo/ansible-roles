@@ -1,7 +1,14 @@
 git:
-  core:
-    editor: mcedit
-  merge:
-    tool: meld
-  push:
-    default: upstream
+  local_cache_path: /tmp
+  remote_cache_path: /tmp
+  settings:
+    core:
+      editor: mcedit
+    merge:
+      tool: meld
+    push:
+      default: upstream
+  repositories:
+    - url: git@github.com:andyceo/ansible-example.git
+      version: master
+      directory: ansible-example

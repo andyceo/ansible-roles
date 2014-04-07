@@ -8,3 +8,23 @@
     dest=/etc/gitconfig
     mode=0644
   sudo: yes
+
+- name: Checkout all repositories to local cache
+  local_action:
+    git
+      repo={{ item.url }}
+      dest={{ git.local_cache_path }}/git/{{ item.directory }}
+      version={{ item.version | default('HEAD') }}
+  with_items: git.repositories
+
+- name: Archive local cache
+  local_action:
+    command
+      tar czf {{ git.local_cache_path }}/git-cache.tar.gz git
+      chdir={{ git.local_cache_path }}
+      creates={{ git.local_cache_path }}/git-cache.tar.gz
+
+- name: Unarchive local cache to the remote cache
+  unarchive:
+    src={{ git.local_cache_path }}/git-cache.tar.gz
+    dest={{ git.remote_cache_path }}/
