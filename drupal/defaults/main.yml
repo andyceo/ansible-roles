@@ -23,6 +23,7 @@ drupal:
   drupal_roots:
     # Drupal 8 bleeding edge
     - directory: drupal8-core
+      major_version: 8
       projects:
         - name: drupal
           type: core
@@ -77,6 +78,7 @@ drupal:
             timezone: Europe/Moscow
     # Drupal 8.0-alpha10
     - directory: drupal8-alpha10
+      major_version: 8
       projects:
         - name: drupal
           type: core
@@ -102,6 +104,7 @@ drupal:
             timezone: Europe/Moscow
     # Drupal 7 bleeding edge
     - directory: drupal7-core
+      major_version: 7
       projects:
         - name: drupal
           type: core

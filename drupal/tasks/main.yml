@@ -9,9 +9,10 @@
 - name: Checkout all projects under git_drupalorg to local cache
   local_action:
     command
-      drush dl {{ item.1.name }}-{{ item.1.version }}
+      drush dl {{ item.1.name }}
         -y
         --package-handler=git_drupalorg
+        --default-major={{ item.0.major_version | default(drupal.default.major_version) }}
         --destination={{ drupal.local_cache_path }}/drupal/git_drupalorg
         --drupal-project-rename={{ item.1.name }}
       creates={{ drupal.local_cache_path }}/drupal/git_drupalorg/{{ item.1.name }}
