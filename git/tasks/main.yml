@@ -9,13 +9,25 @@
     mode=0644
   sudo: yes
 
-- name: Checkout all repositories to local cache
+# TODO: remove after dropping support for ansible versions before 1.5
+- name: Checkout all repositories to local cache (Ubuntu behind 14.04)
   local_action:
     git
       repo={{ item.url }}
       dest={{ git.local_cache_path }}/git/{{ item.directory }}
       version={{ item.version | default('HEAD') }}
   with_items: git.repositories
+  when: ansible_distribution_version < '14.04'
+
+- name: Checkout all repositories to local cache (Ubuntu 14.04 and above)
+  local_action:
+    git
+      repo={{ item.url }}
+      dest={{ git.local_cache_path }}/git/{{ item.directory }}
+      version={{ item.version | default('HEAD') }}
+      accept_hostkey=yes
+  with_items: git.repositories
+  when: ansible_distribution_version >= '14.04'
 
 - name: Archive local cache
   local_action:
