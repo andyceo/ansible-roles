@@ -9,6 +9,4 @@ git:
     push:
       default: upstream
   repositories:
-    - url: git@github.com:andyceo/ansible-example.git
-      version: master
-      directory: ansible-example
+    ansible-example: git@github.com:andyceo/ansible-example.git

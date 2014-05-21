@@ -13,20 +13,18 @@
 - name: Checkout all repositories to local cache (Ubuntu behind 14.04)
   local_action:
     git
-      repo={{ item.url }}
-      dest={{ git.local_cache_path }}/git/{{ item.directory }}
-      version={{ item.version | default('HEAD') }}
-  with_items: git.repositories
+      repo={{ item.value }}
+      dest={{ git.local_cache_path }}/git/{{ item.key }}
+  with_dict: git.repositories
   when: ansible_distribution_version < '14.04'
 
 - name: Checkout all repositories to local cache (Ubuntu 14.04 and above)
   local_action:
     git
-      repo={{ item.url }}
-      dest={{ git.local_cache_path }}/git/{{ item.directory }}
-      version={{ item.version | default('HEAD') }}
+      repo={{ item.value }}
+      dest={{ git.local_cache_path }}/git/{{ item.key }}
       accept_hostkey=yes
-  with_items: git.repositories
+  with_dict: git.repositories
   when: ansible_distribution_version >= '14.04'
 
 - name: Archive local cache
