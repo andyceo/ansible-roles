@@ -9,7 +9,7 @@
     mode=0644
   sudo: yes
 
-- name: Checkout all repositories to local cache (Ubuntu 14.04 and above)
+- name: Clone all repositories to local cache and checkout them to the HEAD
   local_action:
     git
       repo={{ item.value }}
