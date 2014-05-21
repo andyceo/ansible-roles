@@ -5,10 +5,12 @@ drupal:
   sources:
     - git_drupalorg
     - wget
+    - git
   project_types:
     - core
     - module
     - theme
+    - profile
   owner: root
   group: root
   wwwuser: www-data
@@ -19,6 +21,7 @@ drupal:
     directory:
       module: modules/contrib
       theme: themes/contrib
+      profile: profiles
 
   drupal_roots:
     # Drupal 8 bleeding edge
