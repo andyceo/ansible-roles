@@ -1,0 +1,7 @@
+xdebug:
+  idekey: PHPSTORM
+  trace_format: 1
+  profiler_enable_trigger: 1
+  trace_enable_trigger: 1
+  remote_enable: 1
+  remote_connect_back: 0

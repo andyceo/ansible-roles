@@ -1,0 +1,13 @@
+---
+
+- name: Install Xdebug
+  apt: pkg=php5-xdebug
+  sudo: yes
+  notify: apache-restart
+
+- name: Render settings file
+  template:
+    src=xdebug.ini.j2
+    dest=/etc/php5/conf.d/xdebug.ini
+  sudo: yes
+  notify: apache-restart
