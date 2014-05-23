@@ -18,6 +18,7 @@
 - name: Copy PHP settings files
   template:
     src=php.ini.j2
-    dest={{ php.settings[item].filepath }}
+    dest={{ php.settings_pathes[item.key] }}
   sudo: yes
-  with_items: php.settings|list
+  with_dict: php.settings
+  notify: apache-restart

@@ -1,19 +1,48 @@
 ---
 php:
   settings:
+    common:
+      realpath_cache_size: 8192k
+      opcache.enable: 1
+      opcache.enable: 1
+      opcache.enable_cli: 1
+      opcache.memory_consumption: 128
+      opcache.interned_strings_buffer: 8
+      opcache.max_accelerated_files: 4096
+      opcache.use_cwd: 1
+      opcache.validate_timestamps: 1
+      opcache.revalidate_freq: 1
+      opcache.save_comments: 1
+      opcache.fast_shutdown: 1
+      opcache.max_wasted_percentage: 5
+      opcache.revalidate_path: 0
+      opcache.load_comments: 1
+      opcache.enable_file_override: 0
+      opcache.optimization_level: '0xffffffff'
+      opcache.inherited_hack: 1
+      opcache.dups_fix: 0
+      opcache.max_file_size: 0
+      opcache.consistency_checks: 0
+      opcache.force_restart_timeout: 180
+      opcache.log_verbosity_level: 1
+      opcache.protect_memory: 0
+      opcache.blacklist_filename: ''
+      opcache.error_log: ''
+      opcache.preferred_memory_model: ''
     cli:
-      filepath: /etc/php5/cli/php.ini
       max_execution_time: 0
       memory_limit: -1
       disable_functions: ''
       html_errors: 'Off'
-      session:
-        gc_probability: 0
+      session.gc_probability: 0
+      opcache.enable: 1
     apache2:
-      filepath: /etc/php5/apache2/php.ini
       max_execution_time: 85
       memory_limit: 256M
       disable_functions: "pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,"
       html_errors: 'On'
-      session:
-        gc_probability: 1
+      session.gc_probability: 1
+  settings_pathes:
+    common: /etc/php5/conf.d/php.ini
+    cli: /etc/php5/cli/conf.d/php.ini
+    apache2: /etc/php5/apache2/conf.d/php.ini
