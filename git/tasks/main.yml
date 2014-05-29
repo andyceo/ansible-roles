@@ -13,18 +13,15 @@
   local_action:
     git
       repo={{ item.value }}
-      dest={{ git.local_cache_path }}/git/{{ item.key }}
+      dest={{ git.local_cache_path }}/{{ item.key }}
       accept_hostkey=yes
+      update=yes
+      version=HEAD
+      force=yes
   with_dict: git.repositories
 
-- name: Archive local cache
-  local_action:
-    command
-      tar czf {{ git.local_cache_path }}/git-cache.tar.gz git
-      chdir={{ git.local_cache_path }}
-      creates={{ git.local_cache_path }}/git-cache.tar.gz
-
-- name: Unarchive local cache to the remote cache
-  unarchive:
-    src={{ git.local_cache_path }}/git-cache.tar.gz
+- name: Sync git local cache with git remote cache
+  synchronize:
+    src={{ git.local_cache_path }}/
     dest={{ git.remote_cache_path }}/
+    delete=yes

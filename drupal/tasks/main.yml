@@ -24,12 +24,22 @@
 
 # @TODO: Make a local cache for other package handlers
 
-- name: Archive local cache
+- name: Remove old archives of drupal local cache if they exists
+  local_action:
+    command
+      rm -f {{ drupal.local_cache_path }}/drupal-cache.tar.gz
+      removes={{ drupal.local_cache_path }}/drupal-cache.tar.gz
+
+- name: Archive drupal local cache
   local_action:
     command
       tar czf {{ drupal.local_cache_path }}/drupal-cache.tar.gz drupal
       chdir={{ drupal.local_cache_path }}
-      creates={{ drupal.local_cache_path }}/drupal-cache.tar.gz
+
+- name: Remove old archives of drupal remote cache if they exists
+  command:
+    rm -f {{ drupal.remote_cache_path }}/drupal-cache.tar.gz {{ drupal.remote_cache_path }}/drupal
+    removes={{ drupal.remote_cache_path }}/drupal-cache.tar.gz
 
 - name: Unarchive local cache to the remote cache
   unarchive:
@@ -91,7 +101,7 @@
 
 - name: Copy all git projects to its apropriate destinations
   command:
-    cp -r {{ git.remote_cache_path }}/git/{{ item.1.name }} {{ drupal.directory_prefix }}/{{ item.0.directory }}/{{ item.1.directory | default(drupal.default.directory[item.1.type] ~ "/" ~ item.1.name) }}
+    cp -r {{ git.remote_cache_path }}/{{ item.1.name }} {{ drupal.directory_prefix }}/{{ item.0.directory }}/{{ item.1.directory | default(drupal.default.directory[item.1.type] ~ "/" ~ item.1.name) }}
     creates={{ drupal.directory_prefix }}/{{ item.0.directory }}/{{ item.1.directory | default(drupal.default.directory[item.1.type] ~ "/" ~ item.1.name) }}
   sudo: yes
   with_subelements:

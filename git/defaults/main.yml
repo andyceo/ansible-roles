@@ -1,6 +1,6 @@
 git:
-  local_cache_path: /tmp
-  remote_cache_path: /tmp
+  local_cache_path: /tmp/git
+  remote_cache_path: /tmp/git
   settings:
     core:
       editor: mcedit
@@ -10,3 +10,4 @@ git:
       default: upstream
   repositories:
     ansible-example: git@github.com:andyceo/ansible-example.git
+    ansible-roles: git@github.com:andyceo/ansible-roles.git
