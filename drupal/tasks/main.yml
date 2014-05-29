@@ -1,7 +1,7 @@
 - name: Create local cache folders for each package-handler variants
   local_action:
     file
-      path={{ drupal.local_cache_path }}/drupal/{{ item }}
+      path={{ drupal.local_cache_path }}/{{ item }}
       mode=0755
       state=directory
   with_items: drupal.sources
@@ -14,9 +14,9 @@
         -r {{ drupal.directory_prefix }}/{{ item.0.directory }}
         --package-handler=git_drupalorg
         --default-major={{ item.0.major_version | default(drupal.default.major_version) }}
-        --destination={{ drupal.local_cache_path }}/drupal/git_drupalorg
+        --destination={{ drupal.local_cache_path }}/git_drupalorg
         --drupal-project-rename={{ item.1.name }}
-      creates={{ drupal.local_cache_path }}/drupal/git_drupalorg/{{ item.1.name }}
+      creates={{ drupal.local_cache_path }}/git_drupalorg/{{ item.1.name }}
   with_subelements:
     - drupal.drupal_roots
     - projects
@@ -24,27 +24,11 @@
 
 # @TODO: Make a local cache for other package handlers
 
-- name: Remove old archives of drupal local cache if they exists
-  local_action:
-    command
-      rm -f {{ drupal.local_cache_path }}/drupal-cache.tar.gz
-      removes={{ drupal.local_cache_path }}/drupal-cache.tar.gz
-
-- name: Archive drupal local cache
-  local_action:
-    command
-      tar czf {{ drupal.local_cache_path }}/drupal-cache.tar.gz drupal
-      chdir={{ drupal.local_cache_path }}
-
-- name: Remove old archives of drupal remote cache if they exists
-  command:
-    rm -f {{ drupal.remote_cache_path }}/drupal-cache.tar.gz {{ drupal.remote_cache_path }}/drupal
-    removes={{ drupal.remote_cache_path }}/drupal-cache.tar.gz
-
-- name: Unarchive local cache to the remote cache
-  unarchive:
-    src={{ drupal.local_cache_path }}/drupal-cache.tar.gz
+- name: Sync drupal local cache with drupal remote cache
+  synchronize:
+    src={{ drupal.local_cache_path }}/
     dest={{ drupal.remote_cache_path }}/
+    delete=yes
 
 - name: Create/update drupal prefix directory
   file:
@@ -57,7 +41,7 @@
 
 - name: Copy all drupal_roots (Drupal cores) under git_drupalorg from remote cache to the apropriate destination
   command:
-    cp -r {{ drupal.remote_cache_path }}/drupal/{{ item.1.source }}/drupal/ {{ drupal.directory_prefix }}/{{ item.0.directory }}/
+    cp -r {{ drupal.remote_cache_path }}/{{ item.1.source }}/drupal/ {{ drupal.directory_prefix }}/{{ item.0.directory }}/
     creates={{ drupal.directory_prefix }}/{{ item.0.directory }}
   sudo: yes
   with_subelements:
@@ -66,6 +50,7 @@
   when: (item.1.source == "git_drupalorg") and (item.1.type == "core")
 
 # We don't use ansible git module here because we don't know the repository url
+# TODO: add git source type here
 - name: Checkout all drupal_roots (Drupal cores) under git_drupalorg to the aproprite version
   command:
     git checkout {{ item.1.version }}
@@ -91,7 +76,7 @@
 
 - name: Copy all non-core projects under git_drupalorg to its apropriate destinations
   command:
-    cp -r {{ drupal.remote_cache_path }}/drupal/{{ item.1.source }}/{{ item.1.name }} {{ drupal.directory_prefix }}/{{ item.0.directory }}/{{ item.1.directory | default(drupal.default.directory[item.1.type] ~ "/" ~ item.1.name) }}
+    cp -r {{ drupal.remote_cache_path }}/{{ item.1.source }}/{{ item.1.name }} {{ drupal.directory_prefix }}/{{ item.0.directory }}/{{ item.1.directory | default(drupal.default.directory[item.1.type] ~ "/" ~ item.1.name) }}
     creates={{ drupal.directory_prefix }}/{{ item.0.directory }}/{{ item.1.directory | default(drupal.default.directory[item.1.type] ~ "/" ~ item.1.name) }}
   sudo: yes
   with_subelements:

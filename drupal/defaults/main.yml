@@ -1,7 +1,7 @@
 drupal:
   directory_prefix: /var/www/drupal
-  local_cache_path: /tmp
-  remote_cache_path: /tmp
+  local_cache_path: /tmp/drupal
+  remote_cache_path: /tmp/drupal
   sources:
     - git_drupalorg
     - wget
