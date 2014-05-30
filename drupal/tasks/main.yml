@@ -29,6 +29,7 @@
     src={{ drupal.local_cache_path }}/
     dest={{ drupal.remote_cache_path }}/
     delete=yes
+  when: hostvars[ansible_hostname]['ansible_connection'] | default('') != 'local'
 
 - name: Create/update drupal prefix directory
   file:

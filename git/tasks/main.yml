@@ -25,3 +25,4 @@
     src={{ git.local_cache_path }}/
     dest={{ git.remote_cache_path }}/
     delete=yes
+  when: hostvars[ansible_hostname]['ansible_connection'] | default('') != 'local'
