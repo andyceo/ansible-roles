@@ -9,6 +9,13 @@
     mode=0644
   sudo: yes
 
+- name: Create local cache if not exists
+  local_action:
+    file
+      path={{ git.local_cache_path }}
+      mode=0755
+      state=directory
+
 - name: Clone all repositories to local cache and checkout them to the HEAD
   local_action:
     git
@@ -20,9 +27,16 @@
       force=yes
   with_dict: git.repositories
 
+- name: Create remote cache if not exists
+  file:
+    path={{ git.remote_cache_path }}
+    mode=0755
+    state=directory
+
 - name: Sync git local cache with git remote cache
   synchronize:
-    src={{ git.local_cache_path }}/
-    dest={{ git.remote_cache_path }}/
+    src={{ git.local_cache_path }}/{{ item.key }}/
+    dest={{ git.remote_cache_path }}/{{ item.key }}/
     delete=yes
+  with_dict: git.repositories
   when: hostvars[ansible_hostname]['ansible_connection'] | default('') != 'local'
