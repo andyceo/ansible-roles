@@ -1,4 +1,0 @@
-- name: sysctl-apply
-  command:
-    sysctl -p
-  sudo: yes

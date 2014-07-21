@@ -1,6 +1,13 @@
 ---
 preconf:
   sysctl:
-    fs:
-      inotify:
-        max_user_watches: 524288
+    # Next is Dropbox and PhpStorm issue:
+    #
+    # Dropbox:
+    # echo fs.inotify.max_user_watches=100000 | sudo tee -a /etc/sysctl.conf; sudo sysctl -p
+    #
+    # PhpStorm:
+    # http://confluence.jetbrains.com/display/IDEADEV/Inotify+Watches+Limit
+    # 1. In file "/etc/sysctl.conf" change/add row: "fs.inotify.max_user_watches = 524288"
+    # 2. Then "sudo sysctl -p" to apply changes immediately
+    fs.inotify.max_user_watches: 524288
