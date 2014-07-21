@@ -1,5 +1,5 @@
 ---
 allow_duplicates: no
 dependencies:
-  - { role: preconf }
+  - { role: andyceo.preconf }
   - { role: mailutils }

@@ -1,7 +1,7 @@
 ---
 allow_duplicates: no
 dependencies:
-  - { role: preconf }
+  - { role: andyceo.preconf }
   - { role: mc }
   - { role: git }
   - { role: mailutils }

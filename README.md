@@ -15,3 +15,8 @@ This version of roles was tested only on:
 Previous versions of Ansible and Ubuntu are not supported. If you interested in its support, please, provide patches. We plan to support further versions if Ubuntu LTS releases and Ansible stable releases.
 
 Previous versions of Ansible and Ubuntu are not supported. If you interested in its support, please, provide patches.
+
+You need first install required roles from Ansible Galaxy:
+
+    cd ansible-roles
+    ansible-galaxy install andyceo.preconf
