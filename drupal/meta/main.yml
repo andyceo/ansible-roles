@@ -2,7 +2,7 @@
 allow_duplicates: no
 dependencies:
   - { role: andyceo.preconf }
-  - { role: git }
+  - { role: andyceo.git }
   - { role: utilities }
   - { role: php }
   - { role: drush }

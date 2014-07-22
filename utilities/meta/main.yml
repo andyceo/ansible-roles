@@ -4,6 +4,6 @@ dependencies:
   - { role: andyceo.preconf }
   - { role: andyceo.mailutils }
   - { role: andyceo.mc }
-  - { role: git }
+  - { role: andyceo.git }
   - { role: ssh }
   - { role: logrotate }
