@@ -1,47 +1,51 @@
 [alias]
-  apply = apply --index
-  # Useful aliases
-  # cf. https://git.wiki.kernel.org/index.php/Aliases
-  st = status
-  ci = commit
-  br = branch
-  co = checkout
-  df = diff
-  dc = diff --cached
-  ds = diff --staged
-  lg = log -p
-  who = shortlog -s --
+{% for key, value in git.settings.alias.iteritems() %}
+  {{ key }} = {{ value }}
+{% endfor %}
+
 [branch]
-  autosetuprebase = always
+{% for key, value in git.settings.branch.iteritems() %}
+  {{ key }} = {{ value }}
+{% endfor %}
+
 [core]
-  autocrlf = false
-  safecrlf = false
-  ignorecase = false
-  excludesfile = ~/.gitignore
-  editor = {{ git.settings.core.editor | default('mcedit') }}
+{% for key, value in git.settings.core.iteritems() %}
+  {{ key }} = {{ value }}
+{% endfor %}
+
 [color]
-  diff = true
-  status = true
-  branch = true
-  ui = true
+{% for key, value in git.settings.color.iteritems() %}
+  {{ key }} = {{ value }}
+{% endfor %}
+
 [color "branch"]
   current = yellow reverse
   local = yellow
   remote = green
+
 [color "diff"]
   meta = blue black bold
   frag = magenta bold
   old = red bold
   new = green bold
+
 [color "status"]
   added = yellow
   changed = green
   untracked = cyan
+
 [diff]
   renames = copies
+
 [format]
   pretty = "%n%n%nCommit:  %C(yellow)%H%nAuthor:  %C(green)%aN <%aE>%nDate:    (%C(red)%ar%Creset) %ai%nSubject: %s%b"
+
 [merge]
-  tool = {{ git.settings.merge.tool | default('meld') }}
+{% for key, value in git.settings.merge.iteritems() %}
+  {{ key }} = {{ value }}
+{% endfor %}
+
 [push]
-  default = {{ git.settings.push.default | default('upstream') }}
+{% for key, value in git.settings.push.iteritems() %}
+  {{ key }} = {{ value }}
+{% endfor %}
