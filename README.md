@@ -18,5 +18,5 @@ Previous versions of Ansible and Ubuntu are not supported. If you interested in 
 
 You need first install required roles from Ansible Galaxy:
 
-    cd ansible-roles
-    ansible-galaxy install andyceo.preconf
+    cd ansible
+    ansible-galaxy install andyceo.preconf andyceo.mailutils andyceo.mc

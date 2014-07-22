@@ -3,7 +3,7 @@ allow_duplicates: no
 dependencies:
   - { role: andyceo.preconf }
   - { role: andyceo.mailutils }
-  - { role: mc }
+  - { role: andyceo.mc }
   - { role: git }
   - { role: ssh }
   - { role: logrotate }
