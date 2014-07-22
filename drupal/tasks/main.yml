@@ -87,7 +87,7 @@
 
 - name: Copy all git projects to its apropriate destinations
   command:
-    cp -r {{ git.remote_cache_path }}/{{ item.1.name }} {{ drupal.directory_prefix }}/{{ item.0.directory }}/{{ item.1.directory | default(drupal.default.directory[item.1.type] ~ "/" ~ item.1.name) }}
+    cp -r {{ git.path }}/{{ item.1.name }} {{ drupal.directory_prefix }}/{{ item.0.directory }}/{{ item.1.directory | default(drupal.default.directory[item.1.type] ~ "/" ~ item.1.name) }}
     creates={{ drupal.directory_prefix }}/{{ item.0.directory }}/{{ item.1.directory | default(drupal.default.directory[item.1.type] ~ "/" ~ item.1.name) }}
   sudo: yes
   with_subelements:
