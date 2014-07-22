@@ -9,11 +9,7 @@
     - php5-gd
     - php5-mcrypt
     - php5-intl
-
-- name: Install php5-json ONLY on distros >= 'Ubuntu 13.10'
-  apt: pkg=php5-json
-  sudo: yes
-  when: hostvars[ansible_hostname]['ansible_lsb']['release'] >= '13.10'
+    - php5-json
 
 - name: Copy PHP settings files
   template:
