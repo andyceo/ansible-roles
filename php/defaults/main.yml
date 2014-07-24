@@ -1,5 +1,11 @@
 ---
 php:
+  modules:
+    curl: php5-curl
+    gd: php5-gd
+    mcrypt: php5-mcrypt
+    intl: php5-intl
+    json: php5-json
   settings:
     common:
       realpath_cache_size: 8192k
@@ -35,7 +41,7 @@ php:
       disable_functions: ''
       html_errors: 'Off'
       session.gc_probability: 0
-      opcache.enable: 1
+      opcache.enable: 0
     apache2:
       max_execution_time: 85
       memory_limit: 256M
@@ -43,6 +49,7 @@ php:
       html_errors: 'On'
       session.gc_probability: 1
   settings_pathes:
-    common: /etc/php5/conf.d/php.ini
     cli: /etc/php5/cli/conf.d/php.ini
     apache2: /etc/php5/apache2/conf.d/php.ini
+  webserver: apache2
+  php-fpm: false

@@ -1,0 +1,4 @@
+---
+- name: restart-php-webserver
+  service: "name={{ php.webserver }} state=restarted"
+  when: php.webserver
