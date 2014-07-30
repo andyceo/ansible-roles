@@ -4,7 +4,7 @@ dependencies:
   - { role: andyceo.preconf }
   - { role: andyceo.git }
   - { role: utilities }
-  - { role: php }
+  - { role: andyceo.php }
   - { role: drush }
   - { role: mysql }
   - { role: apache }

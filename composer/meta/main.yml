@@ -2,4 +2,4 @@
 allow_duplicates: no
 dependencies:
   - { role: andyceo.preconf }
-  - { role: php }
+  - { role: andyceo.php }
