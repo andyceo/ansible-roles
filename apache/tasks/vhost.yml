@@ -10,43 +10,43 @@
   lineinfile:
     dest={{ apache.default_vhost_path }}
     regexp='^\<VirtualHost'
-    line="<VirtualHost {{ apache.vhost }}:{{ apache.port }}>"
+    line="<VirtualHost {{ apache.listen|join(' ') }}>"
   sudo: yes
   notify: apache-reload
 
 - name: Disabling virtual hosts
   command:
-    a2dissite {{ item }}.conf
-    removes=/etc/apache2/sites-enabled/{{ item }}.conf
-  with_items: vhosts|list
+    a2dissite {{ item.key }}.conf
+    removes=/etc/apache2/sites-enabled/{{ item.key }}.conf
+  with_dict: vhosts
   sudo: yes
   notify: apache-reload
-  when: "not vhosts[item].enabled|bool"
+  when: "not item.value.enabled|bool"
 
 - name: Removing virtual hosts
   command:
-    rm /etc/apache2/sites-available/{{ [item }}.conf
-    removes=/etc/apache2/sites-available/{{ item }}.conf
-  with_items: vhosts|list
+    rm /etc/apache2/sites-available/{{ item.key }}.conf
+    removes=/etc/apache2/sites-available/{{ item.key }}.conf
+  with_dict: vhosts
   sudo: yes
   notify: apache-reload
-  when: "not vhosts[item].enabled|bool"
+  when: "not item.value.enabled|bool"
 
 - name: Adding virtual hosts
   template:
     src=vhost.conf.j2
-    dest=/etc/apache2/sites-available/{{ item }}.conf
+    dest=/etc/apache2/sites-available/{{ item.key }}.conf
     mode=0644
-  with_items: vhosts|list
+  with_dict: vhosts
   sudo: yes
   notify: apache-reload
-  when: vhosts[item].enabled|bool
+  when: item.value.enabled|bool
 
 - name: Enabling virtual hosts
   command:
-    a2ensite {{ item }}.conf
-    creates=/etc/apache2/sites-enabled/{{ item }}.conf
-  with_items: vhosts|list
+    a2ensite {{ item.key }}.conf
+    creates=/etc/apache2/sites-enabled/{{ item.key }}.conf
+  with_dict: vhosts
   sudo: yes
   notify: apache-reload
-  when: vhosts[item].enabled|bool
+  when: item.value.enabled|bool

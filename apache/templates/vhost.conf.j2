@@ -1,11 +1,19 @@
-# {{ vhosts[item].ServerName }}
+# Virtual host config for host {{ item.key }}
 
-<VirtualHost {% if vhosts[item].VirtualHost %}{{ vhosts[item].VirtualHost }}{% else %}{{ apache.vhost }}:{{ apache.port }}{% if 'ssl' in apache.modules[apache.profile] %} *:443{% endif %}{% endif %}>
-  DocumentRoot {{ vhosts[item].DocumentRoot }}
-  ServerName {{ vhosts[item].ServerName }}
-{% for ServerAlias in vhosts[item].ServerAlias %}
+<VirtualHost {% if item.value.listen %}{{ item.value.listen|join(' ') }}{% else %}{{ apache.listen|join(' ') }}{% endif %}>
+
+  DocumentRoot {{ item.value.root }}
+  ServerName {{ item.value.name }}
+{% if item.value.aliases is defined %}
+{% for ServerAlias in item.value.aliases %}
   ServerAlias {{ ServerAlias }}
 {% endfor %}
-  ErrorLog /var/log/apache2/{{ item }}-error.log
-  CustomLog /var/log/apache2/{{ item }}-access.log combined
+{% endif %}
+  ErrorLog /var/log/apache2/{{ item.key }}-error.log
+  CustomLog /var/log/apache2/{{ item.key }}-access.log combined
+
+{% if item.value.settings is defined %}
+  {{ item.value.settings|indent(2) }}
+{% endif %}
+
 </VirtualHost>

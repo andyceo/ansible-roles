@@ -8,58 +8,47 @@
 - name: Copy Apache configuration file
   template:
     src={{ apache.profile }}.conf.j2
-    dest={{ apache.conf_dir }}/{{ apache.profile }}.conf
+    dest=/etc/apache2/conf-available/{{ apache.profile }}.conf
     mode=0644
   sudo: yes
-  notify: apache-restart
 
-- name: Activate configuration (Apache 2.4 and above only)
+- name: Activate configuration
   command:
     a2enconf {{ apache.profile }}.conf
-    creates={{ apache.conf_enabled_dir }}/{{ apache.profile }}.conf
+    creates=/etc/apache2/conf-enabled/{{ apache.profile }}.conf
   sudo: yes
-  when: (apache.version >= '2.4') and (apache.conf_enabled_dir | bool)
-  notify: apache-restart
+  notify: apache-reload
 
-- name: Deactivate old configuration (Apache 2.4 and above only)
+- name: Deactivate old configuration
   command:
     a2disconf {{ item }}.conf
-    removes={{ apache.conf_enabled_dir }}/{{ item }}.conf
+    removes=/etc/apache2/conf-enabled/{{ item }}.conf
   sudo: yes
   with_items: apache.profiles
-  when: (item != apache.profile) and (apache.version >= '2.4') and (apache.conf_enabled_dir | bool)
-  notify: apache-restart
+  when: item != apache.profile
+  notify: apache-reload
 
 - name: Remove previous profile configuration file
   file:
-    path={{ apache.conf_dir }}/{{ item }}.conf
+    path=/etc/apache2/conf-available/{{ item }}.conf
     state=absent
   sudo: yes
   with_items: apache.profiles
   when: item != apache.profile
-  notify: apache-restart
+  notify: apache-reload
 
 - name: Set Listen port
   lineinfile:
     dest=/etc/apache2/ports.conf
     regexp='^Listen '
-    line="Listen {{ apache.vhost }}:{{ apache.port }}"
+    line="Listen {{ apache.listen|join(' ') }}"
   sudo: yes
-  notify: apache-restart
-
-- name: Set NameVirtualHost (deprecated)
-  lineinfile:
-    dest=/etc/apache2/ports.conf
-    regexp='^NameVirtualHost '
-    line="NameVirtualHost {{ apache.vhost }}:{{ apache.port }}"
-  sudo: yes
-  when: apache.version < '2.4'
-  notify: apache-restart
+  notify: apache-reload
 
 - name: Enable/disable Apache as service
   service:
     name=apache2
-    enabled={{ apache.service | bool }}
+    enabled=yes
   sudo: yes
 
 

@@ -1,16 +1,13 @@
 ---
 apache:
-  version: '2.4'
   profile: standalone
   profiles:
     - standalone
     - backend
-  vhost: '*'
-  port: 80
-  conf_dir: /etc/apache2/conf-available
-  conf_enabled_dir: /etc/apache2/conf-enabled
+  listen:
+    - '*:80'
+    - '127.0.0.1:8080'
   default_vhost_path: /etc/apache2/sites-available/000-default.conf
-  service: yes
   modules:
     required:
       - alias
@@ -45,10 +42,18 @@ apache:
 
 vhosts:
   'example.com':
-    VirtualHost: ' *:80 127.0.0.1:8080'
-    DocumentRoot: /var/www
-    ServerName: example.com
-    ServerAlias:
+    enabled: no
+    listen:
+      - '*:80'
+      - '127.0.0.1:8080'
+    root: /var/www
+    name: example.com
+    aliases:
       - www.example.com
       - 127.0.0.1
-    enabled: no
+    settings: |
+      <IfModule proxy_http_module>
+        ProxyPass /Content http://n.km-school.ru:8085/Content
+        ProxyPassReverse /Content http://n.km-school.ru:8085/Content
+      </IfModule>
+      Alias /Content2 /var/www/content2
