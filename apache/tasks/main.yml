@@ -45,6 +45,9 @@
   sudo: yes
   notify: apache-reload
 
+
+# Ensure Apache is a service
+
 - name: Enable/disable Apache as service
   service:
     name=apache2
@@ -54,41 +57,45 @@
 
 # Working with Apache modules
 
+- name: Retrieve a list of packaged Apache modules (libapache2-mod-{module})
+  shell:
+    apt-cache search "libapache2-mod-" | cut -s -f 1 -d ' ' | grep libapache2 | sed 's/libapache2-mod-//g'
+  register: apache_packaged_modules
+
+- name: Install requried modules if they not installed yet
+  apt: pkg=libapache2-mod-{{ item }}
+  sudo: yes
+  with_items: ((apache.modules.required | union(apache.modules[apache.profile])) | intersect(apache_packaged_modules.stdout_lines)) | list
+
 - name: Retrieve a list of loaded shared Apache modules
   shell:
     apachectl -M | grep '_module (shared)' | sed 's/_module (shared)//;s/ //' | sort -r
   register: apache_loaded_modules
   sudo: yes
 
-- name: Install requried modules if they not installed yet
-  apt:
-    pkg=libapache2-mod-{{ item }}
+- name: Disable unnecessary modules
+  command:
+    a2dismod {{ item }}
   sudo: yes
-  with_items: ((apache.modules.required | union(apache.modules[apache.profile])) | intersect(apache.modules.packaged)) | list
-
-#- name: Disable unnecessary modules
-  #command:
-    #a2dismod {{ item }}
-  #sudo: yes
-  #with_items: apache_loaded_modules.stdout_lines
-  #when: item not in (apache.modules.required | union(apache.modules.ignored) | union(apache.modules[apache.profile]))
-  #notify: apache-restart
+  with_items: apache_loaded_modules.stdout_lines
+  when: item not in (apache.modules.required | union(apache.modules[apache.profile]))
+  notify: apache-restart
 
 - name: Enable required modules
   command:
     a2enmod {{ item }}
   sudo: yes
   with_items: (apache.modules.required | union(apache.modules[apache.profile])) | list
-  when: item not in (apache_loaded_modules.stdout_lines | union(apache.modules.ignored))
+  when: item not in apache_loaded_modules.stdout_lines
   notify: apache-restart
 
-#- name: Remove unused packaged modules
-  #apt:
-    #pkg=libapache2-mod-{{ item }}
-    #state=absent
-  #sudo: yes
-  #with_items: (apache_loaded_modules.stdout_lines | intersect(apache.modules.packaged)) | list
-  #when: item not in (apache.modules.required | union(apache.modules.ignored) | union(apache.modules[apache.profile]))
+- name: Remove unused packaged modules
+  apt:
+    pkg=libapache2-mod-{{ item }}
+    state=absent
+  sudo: yes
+  with_items: (apache_loaded_modules.stdout_lines | intersect(apache_packaged_modules.stdout_lines)) | list
+  when: item not in (apache.modules.required | union(apache.modules[apache.profile]))
 
 
 # Working with Apache virtual hosts
