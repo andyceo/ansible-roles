@@ -3,4 +3,4 @@ allow_duplicates: no
 dependencies:
   - { role: andyceo.preconf }
   - { role: andyceo.php }
-  - { role: apache }
+  - { role: andyceo.apache }
