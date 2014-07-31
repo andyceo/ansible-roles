@@ -1,6 +1,7 @@
 # Virtual host config for host {{ item.key }}
 
-<VirtualHost {% if item.value.listen %}{{ item.value.listen|join(' ') }}{% else %}{{ apache.listen|join(' ') }}{% endif %}>
+<VirtualHost {% if item.value.listen is defined %}{{ item.value.listen|join(' ') }}{% else %}{{ apache.listen|join(' ') }}{%
+endif %}>
 
   DocumentRoot {{ item.value.root }}
   ServerName {{ item.value.name }}
