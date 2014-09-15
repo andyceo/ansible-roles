@@ -3,5 +3,5 @@ allow_duplicates: no
 dependencies:
   - { role: andyceo.preconf }
   - { role: andyceo.php }
-  - { role: composer }
+  - { role: andyceo.composer }
   - { role: utilities }

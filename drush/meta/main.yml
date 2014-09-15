@@ -4,4 +4,4 @@ dependencies:
   - { role: andyceo.preconf }
   - { role: andyceo.git }
   - { role: andyceo.php }
-  - { role: composer }
+  - { role: andyceo.composer }
