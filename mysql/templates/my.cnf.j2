@@ -75,3 +75,5 @@ max_binlog_size         = 100M
 # ssl-key=/etc/mysql/server-key.pem
 
 innodb_buffer_pool_size = {{ mysql.settings.innodb_buffer_pool_size | default('1024M') }}
+innodb_file_per_table = 1
+innodb_file_format = barracuda
