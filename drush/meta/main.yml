@@ -1,7 +1,0 @@
----
-allow_duplicates: no
-dependencies:
-  - { role: andyceo.preconf }
-  - { role: andyceo.git }
-  - { role: andyceo.php }
-  - { role: andyceo.composer }
