@@ -2,6 +2,7 @@
   apt: pkg={{ item }}
   sudo: yes
   with_items:
+    - mysql-common
     - mysql-server
     - mysql-client
     - python-mysqldb
@@ -43,8 +44,8 @@
   mysql_user:
     login_user=root
     login_password={{ mysql.root_password }}
-    name={{ item }}
-    password={{ mysql.users[item].password }}
-    priv={{ mysql.users[item].priv }}
-    state={{ mysql.users[item].state | default('present') }}
-  with_items: mysql.users|list
+    name={{ item.key }}
+    password={{ item.value.password }}
+    priv={{ item.value.priv }}
+    state={{ item.value.state | default('present') }}
+  with_dict: mysql.users

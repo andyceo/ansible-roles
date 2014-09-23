@@ -9,33 +9,6 @@ datadir         = /var/lib/mysql
 tmpdir          = /tmp
 lc-messages-dir = /usr/share/mysql
 skip-external-locking
-bind-address            = 127.0.0.1
-max_allowed_packet      = 16M
-thread_stack            = 192K
-thread_cache_size       = 8
-max_connections         = 20
-myisam-recover          = DEFAULT
-
-# table_open_cache was previously known as table_cache in MySQL 5.1.2 and earlier.
-table_open_cache        = 1024
-thread_concurrency      = 8
-
-max_heap_table_size     = 32M
-tmp_table_size          = 32M
-
-# key_buffer_size was previously known as key_buffer
-key_buffer_size         = 64M
-key_cache_division_limit= 70
-
-sort_buffer_size        = 16M
-read_buffer_size        = 4M
-read_rnd_buffer_size    = 4M
-myisam_sort_buffer_size = 4M
-
-# Query Cache Configuration
-query_cache_limit       = 1M
-query_cache_size        = 32M
-query_cache_type        = 1
 
 # Error logging goes to syslog. This is a Debian improvement :)
 # Error logging goes to syslog due to /etc/mysql/conf.d/mysqld_safe_syslog.cnf.
@@ -43,7 +16,6 @@ query_cache_type        = 1
 log_slow_queries        = /var/log/mysql/mysql-slow.log
 long_query_time         = 3
 #log-queries-not-using-indexes #it save MANY simple queries, so commented
-
 
 #
 # The following can be used as easy to replay backup logs or for replication.
@@ -57,23 +29,9 @@ max_binlog_size         = 100M
 #binlog_ignore_db       = include_database_name
 
 
-#
-# * InnoDB
-#
-# InnoDB is enabled by default with a 10MB datafile in /var/lib/mysql/.
-# Read the manual for more InnoDB related options. There are many!
-#
-# * Security Features
-#
-# Read the manual, too, if you want chroot!
-# chroot = /var/lib/mysql/
-#
-# For generating SSL certificates I recommend the OpenSSL GUI "tinyca".
-#
-# ssl-ca=/etc/mysql/cacert.pem
-# ssl-cert=/etc/mysql/server-cert.pem
-# ssl-key=/etc/mysql/server-key.pem
+# The following settings you can change in group and host variables.
+# See defaults/main.yml for comments.
 
-innodb_buffer_pool_size = {{ mysql.settings.innodb_buffer_pool_size | default('1024M') }}
-innodb_file_per_table = 1
-innodb_file_format = barracuda
+{% for key, value in mysql.settings.iteritems() | sort %}
+{{ key }} = {{ value }}
+{% endfor %}
