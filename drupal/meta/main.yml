@@ -6,5 +6,5 @@ dependencies:
   - { role: utilities }
   - { role: andyceo.php }
   - { role: andyceo.drush }
-  - { role: mysql }
+  - { role: andyceo.mysql }
   - { role: andyceo.apache }
