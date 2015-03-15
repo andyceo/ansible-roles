@@ -6,4 +6,4 @@ dependencies:
   - { role: andyceo.mc }
   - { role: andyceo.git }
   - { role: ssh }
-  - { role: logrotate }
+  #- { role: logrotate }
