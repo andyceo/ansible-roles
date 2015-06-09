@@ -1,6 +1,4 @@
-xdebug.idekey="{{ xdebug.idekey | default('PHPSTORM') }}"
-xdebug.trace_format={{ xdebug.trace_format | default(1) }}
-xdebug.profiler_enable_trigger={{ xdebug.profiler_enable_trigger | default(1) }}
-xdebug.trace_enable_trigger={{ xdebug.trace_enable_trigger | default(1) }}
-xdebug.remote_enable={{ xdebug.remote_enable | default(1) }}
-xdebug.remote_connect_back={{ xdebug.remote_connect_back | default(0) }}
+{% set settings = xdebug %}
+{% for key, value in settings.iteritems() | sort %}
+xdebug.{{ key }} = {{ value }}
+{% endfor %}
