@@ -8,6 +8,6 @@
 - name: Render settings file
   template:
     src=xdebug.ini.j2
-    dest=/etc/php5/conf.d/xdebug.ini
+    dest=/etc/php5/mods-available/xdebug.ini
   sudo: yes
   notify: apache-restart

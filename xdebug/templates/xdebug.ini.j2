@@ -1,3 +1,4 @@
+zend_extension=xdebug.so
 {% set settings = xdebug %}
 {% for key, value in settings.iteritems() | sort %}
 xdebug.{{ key }} = {{ value }}
