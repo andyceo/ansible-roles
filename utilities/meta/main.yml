@@ -1,9 +1,0 @@
----
-allow_duplicates: no
-dependencies:
-  - { role: andyceo.preconf }
-  - { role: andyceo.mailutils }
-  - { role: andyceo.mc }
-  - { role: andyceo.git }
-  - { role: ssh }
-  #- { role: logrotate }
