@@ -2,7 +2,6 @@
   apt: pkg=logrotate
   sudo: yes
 
-
 - name: Push logrotate main config file
   template:
     src=logrotate.conf.j2
