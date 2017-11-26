@@ -1,3 +1,3 @@
 - name: Install Midnight Commander
   apt: pkg=mc
-  sudo: yes
+  become: yes
