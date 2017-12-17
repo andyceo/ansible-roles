@@ -1,0 +1,5 @@
+---
+
+- name: Install vsftpd
+  apt: pkg=vsftpd update_cache=yes
+  sudo: yes

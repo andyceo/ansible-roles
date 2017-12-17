@@ -1,0 +1,19 @@
+---
+
+- name: vsftpd-start
+  service:
+    name=vsftpd
+    start=started
+  sudo: yes
+
+- name: vsftpd-stop
+  service:
+    name=vsftpd
+    start=stopped
+  sudo: yes
+
+- name: vsftpd-restart
+  service:
+    name=vsftpd
+    state=restarted
+  sudo: yes
