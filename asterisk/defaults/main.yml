@@ -1,0 +1,14 @@
+---
+
+asterisk:
+  mysql:
+    host: 127.0.0.1
+    port: 3367
+    database: asterisk
+    user: asterisk
+    password: 123qwe
+  settings:
+    sip:
+      some_setting: setting_value
+    dialplan:
+      some_setting: setting_value

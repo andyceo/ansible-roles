@@ -1,0 +1,8 @@
+---
+
+- apt: pkg={{ item }}
+  sudo: yes
+  with_items:
+    - asterisk
+    - asterisk-core-sounds-ru
+    - asterisk-mysql
