@@ -1,0 +1,20 @@
+---
+
+dependencies: []
+
+allow_duplicates: no
+
+galaxy_info:
+  author: andyceo
+  description: Install Let`s Encrypt client and provide usefull settings and actions for it
+  license: "license (BSD, MIT)"
+  min_ansible_version: 2.0
+  platforms:
+  - name: Ubuntu
+    versions:
+    - trusty
+  galaxy_tags:
+    - system
+    - development
+
+dependencies: []

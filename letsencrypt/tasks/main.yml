@@ -1,0 +1,64 @@
+---
+
+- name: Clone Let`s Encrypt client git repository to given location
+  git:
+    repo={{ letsencrypt.repo}}
+    dest={{ letsencrypt.path }}
+    accept_hostkey=yes
+    update=yes
+    version={{ letsencrypt.version }}
+    force=yes
+
+- name: Install all necessary OS packages for Let's Encrypt
+  command: "{{ letsencrypt.path }}/certbot-auto --os-packages-only"
+  register: letsencrypt_packages
+  changed_when: letsencrypt_packages.stdout_lines|length > 1
+
+- name: Create Let's Encrypt webroot directory
+  file:
+    path={{ letsencrypt.webroot }}
+    state=directory
+    mode=0755
+    owner=root
+    group=root
+
+- name: Check port 80
+  shell: netstat -tulpn | grep :80
+  register: letsencrypt_port80
+  ignore_errors: True
+  changed_when: False
+
+- name: Start Let's Encrypt client (Certbot) as webroot if port 80 is used (will write files directly to web site roots)
+  command: |
+    {{ letsencrypt.path }}/certbot-auto
+      --no-self-upgrade
+      --email {{ letsencrypt.email }}
+      --agree-tos
+      --text
+      --non-interactive
+      --keep-until-expiring
+      --expand
+      --webroot
+      certonly -w {{ vhosts[item.1].root }} -d {{ item.0 }}
+  with_nested:
+    - "{{ letsencrypt.domains }}"
+    - "{{ vhosts }}"
+  when: "{{ letsencrypt_port80|success and (item.0 == vhosts[item.1].name or item.0 in vhosts[item.1].aliases|default([])) }}"
+  register: letsencrypt_update
+  changed_when: "'Your certificate and chain have been saved' in letsencrypt_update.stdout"
+
+- name: Start Let's Encrypt client (Certbot) as standalone web-server if port 80 is not used
+  command: |
+    {{ letsencrypt.path }}/certbot-auto
+      --no-self-upgrade
+      --email {{ letsencrypt.email }}
+      --agree-tos
+      --text
+      --non-interactive
+      --keep-until-expiring
+      --expand
+      --standalone
+      --standalone-supported-challenges http-01
+      --http-01-port 80
+      certonly -d {{ letsencrypt.domains | join(' -d ') }}
+  when: letsencrypt_port80|failed
