@@ -1,0 +1,12 @@
+-d
+logfile /var/log/memcached.log
+# -v
+# -vv
+-m {{ memcached.memory|default(64) }}
+-p {{ memcached.port|default(11211) }}
+-u {{ memcached.user|default('memcache') }}
+-l 127.0.0.1
+# -c 1024
+# -k
+# -M
+# -r

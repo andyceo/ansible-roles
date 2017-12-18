@@ -1,0 +1,7 @@
+---
+
+memcached:
+  port: 11211
+  # memory limit, in megabytes
+  memory: 64
+  user: memcache

@@ -1,0 +1,19 @@
+---
+
+- name: memcached-start
+  service:
+    name=memcached
+    start=started
+  sudo: yes
+
+- name: memcached-stop
+  service:
+    name=memcached
+    start=stopped
+  sudo: yes
+
+- name: memcached-restart
+  service:
+    name=memcached
+    state=restarted
+  sudo: yes
