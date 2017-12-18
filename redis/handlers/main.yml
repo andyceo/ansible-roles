@@ -1,0 +1,19 @@
+---
+
+- name: redis-start
+  service:
+    name=redis-server
+    start=started
+  sudo: yes
+
+- name: redis-stop
+  service:
+    name=redis-server
+    start=stopped
+  sudo: yes
+
+- name: redis-restart
+  service:
+    name=redis-server
+    state=restarted
+  sudo: yes
