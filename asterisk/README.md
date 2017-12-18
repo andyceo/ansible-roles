@@ -8,4 +8,4 @@ Ubuntu 14.04
 
 ## Misc
 
-This role was firstly placed in its own repository andyceo/ansible-role-asterisk on 2015-09-02 14:57:27 +0300
+This role was firstly placed in its own repository andyceo/ansible-role-drupal-console on 2016-01-01 20:47:19 +0300

@@ -1,0 +1,27 @@
+---
+
+# Drupal Console: https://drupalconsole.com/
+# Installation documentation: https://hechoendrupal.gitbooks.io/drupal-console/content/en/getting/installer.html
+#
+#   sudo curl https://drupalconsole.com/installer -L -o /usr/local/bin/drupal
+
+- name: Download and install drupal console to /usr/local/bin (Global installation)
+  command:
+    curl https://drupalconsole.com/installer -LSso /usr/local/bin/drupal
+    creates='/usr/local/bin/drupal'
+    chdir='/usr/local/bin'
+  sudo: yes
+
+- name: Make drupal console file executable
+  file:
+    path=/usr/local/bin/drupal
+    state=file
+    mode=0755
+  sudo: yes
+
+- name: Update drupal console
+  command:
+    drupal self-update
+  register: drupal_console_update
+  changed_when: "'console has been updated' in drupal_console_update.stdout"
+  sudo: yes

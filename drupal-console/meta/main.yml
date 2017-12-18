@@ -1,0 +1,21 @@
+---
+
+allow_duplicates: no
+
+dependencies:
+  - { role: andyceo.php }
+
+galaxy_info:
+  author: andyceo
+  description: Install Drupal Console
+  license: "license (BSD, MIT)"
+  min_ansible_version: 1.5
+  platforms:
+    - name: Ubuntu
+  versions:
+    - trusty
+  categories:
+    - system
+    - packaging
+    - development
+    - web
