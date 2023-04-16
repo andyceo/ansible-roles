@@ -1,0 +1,19 @@
+---
+
+allow_duplicates: no
+
+dependencies: []
+
+galaxy_info:
+  author: andyceo
+  description: Install ntpd deamon and allow to configure it.
+  license: "license (BSD, MIT)"
+  min_ansible_version: 2.0
+  platforms:
+  - name: Ubuntu
+    versions:
+    - trusty
+    - xenial
+  galaxy_tags:
+    - system
+    - ntp
